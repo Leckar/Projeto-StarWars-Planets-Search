@@ -6,6 +6,7 @@ import './App.css';
 function App() {
   return (
     <main>
+      <h1>Project: Star Wars Planets - Trybe</h1>
       <DataProvider>
         <Table />
       </DataProvider>
