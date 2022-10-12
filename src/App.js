@@ -1,9 +1,16 @@
 import React from 'react';
+import DataProvider from './contexts/DataProvider';
+import Table from './tests/components/Table';
 import './App.css';
 
 function App() {
   return (
-    <span>Star wars!!!</span>
+    <main>
+      <DataProvider>
+        <Table />
+      </DataProvider>
+    </main>
+
   );
 }
 
