@@ -1,28 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
-import DataContext from '../../contexts/DataContext';
+import React, { useContext/* , useEffect , useState */ } from 'react';
+import DataContext from '../contexts/DataContext';
 
 function Table() {
-  const { planetData, shouldRender } = useContext(DataContext);
-  const [namefilter, setNameFilter] = useState('');
-  const [filteredData, setFilteredData] = useState([]);
-
-  const handleNameFilter = ({ target }) => {
-    const { value } = target;
-    setNameFilter(value);
-  };
-
-  useEffect(() => {
-    const data = planetData.filter(({ name }) => name.toLowerCase().includes(namefilter));
-    setFilteredData(data);
-  }, [planetData, namefilter]);
+  const { shldRndr, fltrdData } = useContext(DataContext);
 
   return (
     <main>
-      <input
-        data-testid="name-filter"
-        type="text"
-        onChange={ handleNameFilter }
-      />
       <table>
         <thead>
           <tr>
@@ -42,7 +25,7 @@ function Table() {
           </tr>
         </thead>
         <tbody>
-          {shouldRender && filteredData.length > 0 ? filteredData.map((e) => (
+          {shldRndr && fltrdData.length > 0 ? fltrdData.map((e) => (
             <tr key={ e.name }>
               <td>{e.name}</td>
               <td>{e.rotation_period}</td>
