@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import DataContext from '../contexts/DataContext';
 import { COLUMN_OPTIONS, OPERATOR_OPTIONS } from '../helpers/StandardValues';
-// import Sort from './Sort';
+import Sort from './Sort';
 
 function Filters() {
   const { fltrState, setFltrState,
@@ -105,14 +105,14 @@ function Filters() {
           Filtrar
         </button>
       </div>
-      {/* <Sort /> */}
+      <Sort />
       <div>
         <button
           data-testid="button-remove-filters"
           type="button"
           onClick={ removeAllFiltersButtonHandler }
         >
-          Remover todas filtragens
+          Remover todos os filtros
         </button>
 
       </div>
