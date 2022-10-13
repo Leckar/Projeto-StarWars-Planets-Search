@@ -1,27 +1,42 @@
-import React, { useContext/* , useEffect , useState */ } from 'react';
+import React, {
+  useContext, /* , useEffect , useState */
+  useEffect,
+} from 'react';
 import DataContext from '../contexts/DataContext';
+import { TABLE_HEADERS } from '../helpers/StandardValues';
 
 function Table() {
-  const { shldRndr, fltrdData } = useContext(DataContext);
+  const { plntData, shldRndr, fltrdData,
+    nmfltr, svdFltrs, setFltrdData } = useContext(DataContext);
+
+  useEffect(() => {
+    const newArr = plntData.filter(({ name }) => name.toLowerCase().includes(nmfltr));
+    setFltrdData(newArr);
+    if (svdFltrs.length > 0) {
+      const newData = newArr.filter((eMajor) => svdFltrs.some((eMinor) => {
+        if (eMinor.comparison === 'maior que' && eMajor[eMinor.column] !== 'unknown') {
+          return +eMajor[eMinor.column] > +eMinor.value;
+        }
+        if (eMinor.comparison === 'menor que' && eMajor[eMinor.column] !== 'unknown') {
+          return +eMajor[eMinor.column] < +eMinor.value;
+        }
+        if (eMinor.comparison === 'igual a' && eMajor[eMinor.column] !== 'unknown') {
+          return +eMajor[eMinor.column] === +eMinor.value;
+        }
+        return false;
+      }));
+      setFltrdData(newData);
+    }
+  }, [nmfltr, svdFltrs, plntData]);
 
   return (
     <main>
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Rotation Period</th>
-            <th>Orbital Period</th>
-            <th>Diameter</th>
-            <th>Climate</th>
-            <th>Gravity</th>
-            <th>Terrain</th>
-            <th>Surface Water</th>
-            <th>Population</th>
-            <th>Films</th>
-            <th>Url</th>
-            <th>Created</th>
-            <th>Edited</th>
+            {TABLE_HEADERS.map((e) => (
+              <th key={ e }>{e}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -36,7 +51,7 @@ function Table() {
               <td>{e.terrain}</td>
               <td>{e.surface_water}</td>
               <td>{e.population}</td>
-              <td>{e.films}</td>
+              <td>{e.films.map((film, i) => <span key={ i }>{`${film} `}</span>)}</td>
               <td>{e.url}</td>
               <td>{e.created}</td>
               <td>{e.edited}</td>

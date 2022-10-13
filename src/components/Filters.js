@@ -1,43 +1,49 @@
-import React, { useContext, /* useEffect , */ useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import DataContext from '../contexts/DataContext';
+import { COLUMN_OPTIONS, OPERATOR_OPTIONS } from '../helpers/StandardValues';
 
 function Filters() {
-  const { /* svdFltrs, setSvdFltrs, */ setNmFltr } = useContext(DataContext);
-  const columnOptions = ['population', 'orbital_period', 'diameter',
-    'rotation_period', 'surface_water'];
-  const operatorOptions = ['maior que', 'menor que', 'igual a'];
-  const [fltrdColumn, setColumn] = useState(columnOptions);
-  const [columnValue, setColumnValue] = useState('');
-  const [operatorValue, setOperatorValue] = useState('');
-  const [valueFilter, setValue] = useState('0');
-  const [fltrState, setFltrState] = useState({
-    column: fltrdColumn[0],
-    comparison: operatorOptions[0],
-    value: '0',
-  });
+  const { fltrState, setFltrState,
+    setSvdFltrs, setNmFltr } = useContext(DataContext);
+  const [fltrdColumn, setColumn] = useState(COLUMN_OPTIONS);
 
+  useEffect(() => {
+    setFltrState({
+      column: fltrdColumn[0],
+      comparison: OPERATOR_OPTIONS[0],
+      value: '0',
+    });
+  }, []);
   const nameFilterHandler = ({ target }) => {
     const { value } = target;
     setNmFltr(value);
   };
 
   const columnChangeHandler = ({ target }) => {
-    setColumnValue(target.value);
+    setFltrState((prev) => (
+      {
+        ...prev, column: target.value,
+      }
+    ));
   };
   const operatorChangeHandler = ({ target }) => {
-    setOperatorValue(target.value);
+    setFltrState((prev) => (
+      {
+        ...prev, comparison: target.value,
+      }
+    ));
   };
   const numericInputHandler = ({ target }) => {
-    setValue(target.value);
+    setFltrState((prev) => (
+      {
+        ...prev, value: target.value,
+      }
+    ));
   };
 
   const filterButtonHandler = () => {
-    setSvdFltrs((prev) => [...prev, {
-      column: columnValue,
-      comparison: operatorValue,
-      value: valueFilter,
-    }]);
-    setColumn(fltrdColumn.filter((e) => columnValue !== e));
+    setSvdFltrs((prev) => [...prev, fltrState]);
+    /* setColumn(fltrdColumn.filter((e) => columnValue !== e)); */
   };
 
   return (
@@ -50,6 +56,7 @@ function Filters() {
         />
         <select
           data-testid="column-filter"
+          value={ fltrState.column }
           onChange={ columnChangeHandler }
         >
           {fltrdColumn.map((e) => (
@@ -58,16 +65,17 @@ function Filters() {
         </select>
         <select
           data-testid="comparison-filter"
+          value={ fltrState.comparison }
           onChange={ operatorChangeHandler }
         >
-          {operatorOptions.map((e) => (
+          {OPERATOR_OPTIONS.map((e) => (
             <option key={ e } value={ e }>{e}</option>
           ))}
         </select>
         <input
           type="number"
           data-testid="value-filter"
-          value={ valueFilter }
+          value={ fltrState.value }
           onChange={ numericInputHandler }
         />
         <button

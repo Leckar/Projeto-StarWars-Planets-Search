@@ -9,12 +9,15 @@ function DataProvider({ children }) {
   const [nmfltr, setNmFltr] = useState('');
   const [fltrdData, setFltrdData] = useState([]);
   const [shldRndr, setRndr] = useState(false);
+  const [fltrState, setFltrState] = useState({});
 
   const contexts = {
     plntData,
     setPlntData,
     svdFltrs,
     setSvdFltrs,
+    fltrState,
+    setFltrState,
     nmfltr,
     setNmFltr,
     fltrdData,
@@ -31,11 +34,6 @@ function DataProvider({ children }) {
     };
     dataFetchFormatter();
   }, []);
-
-  useEffect(() => {
-    const data = plntData.filter(({ name }) => name.toLowerCase().includes(nmfltr));
-    setFltrdData(data);
-  }, [plntData, nmfltr]);
 
   return (
     <DataContext.Provider
