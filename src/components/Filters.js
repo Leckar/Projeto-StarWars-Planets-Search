@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import DataContext from '../contexts/DataContext';
 import { COLUMN_OPTIONS, OPERATOR_OPTIONS } from '../helpers/StandardValues';
+// import Sort from './Sort';
 
 function Filters() {
   const { fltrState, setFltrState,
-    setSvdFltrs, setNmFltr } = useContext(DataContext);
+    setSvdFltrs, svdFltrs, setNmFltr } = useContext(DataContext);
   const [fltrdColumn, setColumn] = useState(COLUMN_OPTIONS);
 
   useEffect(() => {
@@ -14,6 +15,7 @@ function Filters() {
       value: '0',
     });
   }, []);
+
   const nameFilterHandler = ({ target }) => {
     const { value } = target;
     setNmFltr(value);
@@ -40,7 +42,6 @@ function Filters() {
       }
     ));
   };
-
   const filterButtonHandler = () => {
     setSvdFltrs((prev) => [...prev, fltrState]);
     setFltrState({
@@ -49,6 +50,19 @@ function Filters() {
       value: '0',
     });
     setColumn(fltrdColumn.filter((e) => fltrState.column !== e));
+  };
+  const removeAllFiltersButtonHandler = () => {
+    setFltrState({
+      column: COLUMN_OPTIONS[0],
+      comparison: OPERATOR_OPTIONS[0],
+      value: '0',
+    });
+    setSvdFltrs([]);
+    setColumn(COLUMN_OPTIONS);
+  };
+  const removeTargetFilterHandler = ({ target: { id } }) => {
+    setColumn([...fltrdColumn, id]);
+    setSvdFltrs(svdFltrs.filter((e) => e.column !== id));
   };
 
   return (
@@ -90,6 +104,34 @@ function Filters() {
         >
           Filtrar
         </button>
+      </div>
+      {/* <Sort /> */}
+      <div>
+        <button
+          data-testid="button-remove-filters"
+          type="button"
+          onClick={ removeAllFiltersButtonHandler }
+        >
+          Remover todas filtragens
+        </button>
+
+      </div>
+      <div>
+        {svdFltrs.map(({ comparison, column, value }, i) => (
+          <span
+            data-testid="filter"
+            key={ i }
+          >
+            {`${column} ${comparison} ${value}`}
+            <button
+              id={ column }
+              type="button"
+              onClick={ removeTargetFilterHandler }
+            >
+              X
+            </button>
+          </span>
+        ))}
       </div>
     </section>
   );

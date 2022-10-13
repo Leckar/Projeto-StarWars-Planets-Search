@@ -13,7 +13,6 @@ function Table() {
     .includes(nmfltr));
 
   const dataFilterByValues = (arr) => {
-    console.log(svdFltrs);
     const newData = arr.filter((planet) => svdFltrs
       .every(({ comparison, column, value }) => {
         if (comparison === 'maior que' && planet[column] !== 'unknown') {
