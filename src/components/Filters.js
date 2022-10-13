@@ -43,7 +43,12 @@ function Filters() {
 
   const filterButtonHandler = () => {
     setSvdFltrs((prev) => [...prev, fltrState]);
-    /* setColumn(fltrdColumn.filter((e) => columnValue !== e)); */
+    setFltrState({
+      column: fltrdColumn[0],
+      comparison: OPERATOR_OPTIONS[0],
+      value: '0',
+    });
+    setColumn(fltrdColumn.filter((e) => fltrState.column !== e));
   };
 
   return (

@@ -9,24 +9,30 @@ function Table() {
   const { plntData, shldRndr, fltrdData,
     nmfltr, svdFltrs, setFltrdData } = useContext(DataContext);
 
-  useEffect(() => {
-    const newArr = plntData.filter(({ name }) => name.toLowerCase().includes(nmfltr));
-    setFltrdData(newArr);
-    if (svdFltrs.length > 0) {
-      const newData = newArr.filter((eMajor) => svdFltrs.some((eMinor) => {
-        if (eMinor.comparison === 'maior que' && eMajor[eMinor.column] !== 'unknown') {
-          return +eMajor[eMinor.column] > +eMinor.value;
+  const dataFilterByString = (arr) => arr.filter(({ name }) => name.toLowerCase()
+    .includes(nmfltr));
+
+  const dataFilterByValues = (arr) => {
+    console.log(svdFltrs);
+    const newData = arr.filter((planet) => svdFltrs
+      .every(({ comparison, column, value }) => {
+        if (comparison === 'maior que' && planet[column] !== 'unknown') {
+          return +planet[column] > +value;
         }
-        if (eMinor.comparison === 'menor que' && eMajor[eMinor.column] !== 'unknown') {
-          return +eMajor[eMinor.column] < +eMinor.value;
+        if (comparison === 'menor que' && planet[column] !== 'unknown') {
+          return +planet[column] < +value;
         }
-        if (eMinor.comparison === 'igual a' && eMajor[eMinor.column] !== 'unknown') {
-          return +eMajor[eMinor.column] === +eMinor.value;
+        if (comparison === 'igual a' && planet[column] !== 'unknown') {
+          return +planet[column] === +value;
         }
         return false;
       }));
-      setFltrdData(newData);
-    }
+    setFltrdData(newData);
+  };
+  useEffect(() => {
+    const newArr = dataFilterByString(plntData);
+    if (svdFltrs.length > 0) return dataFilterByValues(newArr);
+    setFltrdData(newArr);
   }, [nmfltr, svdFltrs, plntData]);
 
   return (
